@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniEarn – Student Freelance Platform</title>
+  <link rel="icon" type="image/jpeg" href="FAVICON.jpeg" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome 6 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <!-- Animate.css -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+  <!-- AOS – Animate On Scroll -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
+  <!-- Custom CSS -->
+  <link href="style.css" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="navbar navbar-expand-lg sticky-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-graduation-cap me-2"></i>UniEarn
+      </a>
+      <a class="btn btn-outline-primary btn-sm rounded-pill px-3" href="https://forms.gle/G5EFMN3fbfBbrMRs5" target="_blank">
+        <i class="fas fa-plus me-1"></i> Become a Freelancer
+      </a>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO SECTION ===================== -->
+  <section class="hero-section">
+    <div class="hero-bg"></div>
+    <div class="container position-relative">
+      <div class="row align-items-center min-vh-75">
+        <div class="col-lg-7" data-aos="fade-right" data-aos-duration="1000">
+          <h1 class="hero-title animate__animated animate__fadeInDown">
+            Earn While You <span class="gradient-text">Learn</span>
+          </h1>
+          <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-1s">
+            UniEarn connects students who need work done with talented student freelancers.
+            Find help with PPTs, video editing, website development, and more — all from fellow students.
+          </p>
+          <div class="animate__animated animate__fadeInUp animate__delay-2s">
+            <a href="https://forms.gle/G5EFMN3fbfBbrMRs5" target="_blank" class="btn btn-primary btn-lg rounded-pill px-4 me-3 shadow-sm">
+              <i class="fas fa-rocket me-2"></i>Join as Freelancer
+            </a>
+            <a href="#freelancers" class="btn btn-outline-dark btn-lg rounded-pill px-4">
+              <i class="fas fa-search me-2"></i>Find Talent
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-5 text-center" data-aos="fade-left" data-aos-duration="1000">
+          <div class="hero-illustration">
+            <div class="floating-card card-1 animate__animated animate__fadeInDown animate__delay-1s">
+              <i class="fas fa-laptop-code"></i>
+              <span>Web Dev</span>
+            </div>
+            <div class="floating-card card-2 animate__animated animate__fadeInUp animate__delay-2s">
+              <i class="fas fa-video"></i>
+              <span>Video Edit</span>
+            </div>
+            <div class="floating-card card-3 animate__animated animate__fadeInDown animate__delay-3s">
+              <i class="fas fa-paint-brush"></i>
+              <span>Design</span>
+            </div>
+            <div class="floating-card card-4 animate__animated animate__fadeInUp animate__delay-1s">
+              <i class="fas fa-file-powerpoint"></i>
+              <span>PPT</span>
+            </div>
+            <div class="floating-card card-5 animate__animated animate__fadeInDown animate__delay-2s">
+              <i class="fas fa-chalkboard-teacher"></i>
+              <span>Tutoring</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FREELANCER CARDS ===================== -->
+  <section class="freelancers-section py-5" id="freelancers">
+    <div class="container">
+      <h2 class="section-title text-center mb-2" data-aos="fade-up">
+        <i class="fas fa-users me-2"></i>Our Freelancers
+      </h2>
+      <p class="text-center text-muted mb-4" data-aos="fade-up">Click <strong>Hire</strong> to connect instantly via WhatsApp</p>
+
+      <!-- Search / Filter -->
+      <div class="row justify-content-center mb-4" data-aos="fade-up">
+        <div class="col-md-6">
+          <div class="input-group search-bar">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" id="searchInput" placeholder="Search by name, skill, location…" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4" id="freelancerCards">
+        <!-- Cards injected by app.js -->
+      </div>
+      <div id="noResults" class="text-center text-muted py-5" style="display:none;">
+        <i class="fas fa-search fa-3x mb-3"></i>
+        <p>No freelancers found. Try a different search term.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HOW IT WORKS ===================== -->
+  <section class="how-it-works py-5" id="howItWorks">
+    <div class="container">
+      <h2 class="section-title text-center mb-5" data-aos="fade-up">
+        <i class="fas fa-cogs me-2"></i>How It Works
+      </h2>
+      <div class="process-timeline">
+        <div class="process-step" data-aos="fade-right" data-aos-delay="0">
+          <div class="step-icon"><i class="fas fa-lightbulb"></i></div>
+          <div class="step-content">
+            <h5>Identify Need</h5>
+            <p>Student A realizes they need help — PPT, video edit, website, poster, etc.</p>
+          </div>
+          <div class="step-number">1</div>
+        </div>
+        <div class="process-step" data-aos="fade-left" data-aos-delay="100">
+          <div class="step-icon"><i class="fas fa-search"></i></div>
+          <div class="step-content">
+            <h5>Find Freelancer</h5>
+            <p>Browse UniEarn to find a skilled Student B who can do the job.</p>
+          </div>
+          <div class="step-number">2</div>
+        </div>
+        <div class="process-step" data-aos="fade-right" data-aos-delay="200">
+          <div class="step-icon"><i class="fas fa-handshake"></i></div>
+          <div class="step-content">
+            <h5>Hire & Agree</h5>
+            <p>Click "Hire" to connect on WhatsApp. Discuss scope, deadline & price.</p>
+          </div>
+          <div class="step-number">3</div>
+        </div>
+        <div class="process-step" data-aos="fade-left" data-aos-delay="300">
+          <div class="step-icon"><i class="fas fa-laptop-code"></i></div>
+          <div class="step-content">
+            <h5>Work & Deliver</h5>
+            <p>Student B completes the work and delivers on time.</p>
+          </div>
+          <div class="step-number">4</div>
+        </div>
+        <div class="process-step" data-aos="fade-right" data-aos-delay="400">
+          <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+          <div class="step-content">
+            <h5>Review & Approve</h5>
+            <p>Student A reviews the work and approves if satisfied.</p>
+          </div>
+          <div class="step-number">5</div>
+        </div>
+        <div class="process-step" data-aos="fade-left" data-aos-delay="500">
+          <div class="step-icon"><i class="fas fa-money-bill-wave"></i></div>
+          <div class="step-content">
+            <h5>Pay & Earn</h5>
+            <p>Student A pays. Student B earns. Everyone wins!</p>
+          </div>
+          <div class="step-number">6</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer py-4">
+    <div class="container text-center">
+      <a class="footer-instagram-link mb-2 d-inline-flex align-items-center gap-2" href="https://www.instagram.com/uniearn_" target="_blank">
+        <i class="fab fa-instagram fa-lg"></i> @uniearn_
+      </a>
+      <p class="mb-1 mt-2">&copy; 2026 UniEarn. All rights reserved.</p>
+      <p class="text-muted small">Made with <i class="fas fa-heart text-danger"></i> for students, by students.</p>
+    </div>
+  </footer>
+
+  <!-- ===================== ADMIN BUTTON (left-bottom) ===================== -->
+  <button id="adminBtn" class="admin-btn" title="Admin Portal">
+    <i class="fas fa-user-shield"></i>
+  </button>
+
+  <!-- ===================== ADMIN PANEL (slides in) ===================== -->
+  <div id="adminPanel" class="admin-panel">
+    <div class="admin-panel-header">
+      <h5><i class="fas fa-shield-alt me-2"></i>UniEarn Admin</h5>
+      <button class="btn btn-sm btn-outline-light" id="logoutBtn"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+    <div class="admin-panel-body">
+      <button class="btn btn-success w-100 mb-2" id="addBtn"><i class="fas fa-plus me-2"></i>Add Freelancer</button>
+      <input type="file" id="importFile" accept=".xlsx" style="display:none;" />
+      <button class="btn btn-info w-100 mb-2" id="importBtn"><i class="fas fa-file-import me-2"></i>Import Excel</button>
+      <button class="btn btn-info w-100 mb-2" id="exportBtn"><i class="fas fa-file-export me-2"></i>Export Excel</button>
+      <button class="btn btn-warning w-100 mb-2" id="exportJsBtn"><i class="fas fa-save me-2"></i>Save to Code (JS)</button>
+    </div>
+  </div>
+
+  <!-- ===================== ADD / EDIT MODAL ===================== -->
+  <div class="modal fade" id="freelancerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle"><i class="fas fa-user-plus me-2"></i>Add Freelancer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="freelancerForm">
+            <div class="mb-3">
+              <label class="form-label"><i class="fas fa-user me-1"></i>Name</label>
+              <input class="form-control" id="nameInput" placeholder="Full Name" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><i class="fas fa-map-marker-alt me-1"></i>Address</label>
+              <input class="form-control" id="addressInput" placeholder="Address" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><i class="fas fa-university me-1"></i>Location / College</label>
+              <input class="form-control" id="locationInput" placeholder="Location or College" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><i class="fas fa-tools me-1"></i>Skills</label>
+              <input class="form-control" id="skillsInput" placeholder="Skills (comma separated)" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><i class="fas fa-briefcase me-1"></i>Work Types</label>
+              <input class="form-control" id="workInput" placeholder="e.g. PPT, Video Editing, Web Dev" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><i class="fab fa-whatsapp me-1"></i>WhatsApp Number</label>
+              <input class="form-control" id="phoneInput" placeholder="e.g. 919876543210" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><i class="fas fa-rupee-sign me-1"></i>Pricing Range (₹)</label>
+              <div class="d-flex gap-2 align-items-center">
+                <input class="form-control" id="priceMinInput" type="number" placeholder="Min e.g. 100" required />
+                <span class="fw-bold">to</span>
+                <input class="form-control" id="priceMaxInput" type="number" placeholder="Max e.g. 500" required />
+              </div>
+            </div>
+            <input type="hidden" id="editIndex" />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary rounded-pill" id="saveBtn"><i class="fas fa-check me-1"></i>Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SCRIPTS ===================== -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
