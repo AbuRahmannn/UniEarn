@@ -2,29 +2,29 @@
 // Or use the Admin panel > "Save to Code (JS)" button to auto-generate this file.
 window.freelancersData = [
   {
-    "name": "PRIYA",
-    "address": "VIJAYAWADA",
+    "name": "Sham Reddy",
+    "address": "Vijayawada",
     "location": "ALIET",
-    "skills": "ASSIGNMENT WORKS",
-    "work": "WRITING WORK",
+    "skills": "Editing",
+    "work": "Video Editing",
     "phone": "852094464",
     "priceMin": "50",
     "priceMax": "150"
   },
   {
-    "name": "Priya Patel",
-    "address": "MG Road, Pune",
-    "location": "MIT Pune",
+    "name": "Neha K",
+    "address": "Vijayawada",
+    "location": "ALIET",
     "skills": "Photoshop, Illustrator, Canva",
     "work": "Poster Design, Photo Editing, Resume Formatting",
     "phone": "919123456789",
     "priceMin": "100",
-    "priceMax": "800"
+    "priceMax": "399"
   },
   {
     "name": "Arjun Reddy",
-    "address": "Banjara Hills, Hyderabad",
-    "location": "JNTU Hyderabad",
+    "address": "Writing Works",
+    "location": "JNTUK",
     "skills": "Premiere Pro, After Effects, DaVinci Resolve",
     "work": "Video Editing, Record Writing",
     "phone": "918765432109",
