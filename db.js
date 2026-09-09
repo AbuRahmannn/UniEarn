@@ -1,10 +1,11 @@
 // ============================================================
 //  db.js – UniEarn Automated Database Module
-//  Uses IndexedDB / LocalStorage with Email OTP verification & GPS Radius Proximity.
+//  Uses Multi-Device Global Cloud Sync REST Engine + LocalStorage.
 // ============================================================
 
 const DB_NAME = 'UniEarnDB';
 const DB_VERSION = 1;
+const CLOUD_DB_URL = 'https://api.restful-api.dev/objects/ff808181a067127101a0873b93995acd';
 
 // List of popular real-time universities and colleges
 window.POPULAR_COLLEGES = [
@@ -85,7 +86,67 @@ class UniEarnDB {
       this.setLocal(this.storageKeyUsers, []);
     }
 
+    // Perform Global Cloud DB Synchronization on Init
+    await this.syncFromCloud();
+
     return true;
+  }
+
+  // --- Global Multi-Device Cloud Synchronization Methods ---
+  async syncFromCloud() {
+    try {
+      const resp = await fetch(CLOUD_DB_URL);
+      if (!resp.ok) return;
+      const res = await resp.json();
+      const cloudData = res.data || {};
+
+      const cloudUsers = cloudData.users || [];
+      const cloudFreelancers = cloudData.freelancers || [];
+
+      // Merge Cloud Users with Local Users
+      const localUsers = this.getLocal(this.storageKeyUsers) || [];
+      const userMap = new Map();
+      [...localUsers, ...cloudUsers].forEach(u => {
+        if (u && u.email) userMap.set(u.email.toLowerCase(), u);
+      });
+      const mergedUsers = Array.from(userMap.values());
+      this.setLocal(this.storageKeyUsers, mergedUsers);
+
+      // Merge Cloud Freelancers with Local Freelancers
+      const localFreelancers = this.getLocal(this.storageKeyFreelancers) || [];
+      const freelancerMap = new Map();
+      [...localFreelancers, ...cloudFreelancers].forEach(f => {
+        if (f && (f.id || f.name)) freelancerMap.set(f.id || f.name.toLowerCase(), f);
+      });
+      const mergedFreelancers = Array.from(freelancerMap.values());
+      this.setLocal(this.storageKeyFreelancers, mergedFreelancers);
+    } catch (e) {
+      console.warn('Cloud Database Fetch Error (using offline local storage):', e);
+    }
+  }
+
+  async syncToCloud() {
+    try {
+      const users = this.getLocal(this.storageKeyUsers) || [];
+      const freelancers = this.getLocal(this.storageKeyFreelancers) || [];
+
+      const payload = {
+        name: "uniearn_main_db",
+        data: {
+          users: users,
+          freelancers: freelancers,
+          lastUpdated: new Date().toISOString()
+        }
+      };
+
+      await fetch(CLOUD_DB_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      console.warn('Cloud Database Push Error:', e);
+    }
   }
 
   getLocal(key) {
@@ -144,7 +205,6 @@ class UniEarnDB {
     const rating = (4.7 + Math.random() * 0.3).toFixed(1);
     const reviews = Math.floor(5 + Math.random() * 25);
 
-    // Look up GPS coordinates for location
     let coords = window.COLLEGE_COORDINATES[freelancerData.location];
     if (!coords && freelancerData.lat && freelancerData.lon) {
       coords = { lat: freelancerData.lat, lon: freelancerData.lon };
@@ -163,6 +223,9 @@ class UniEarnDB {
     };
     list.unshift(newEntry);
     this.setLocal(this.storageKeyFreelancers, list);
+    
+    // Sync to Cloud DB
+    this.syncToCloud();
     return newEntry;
   }
 
@@ -182,6 +245,9 @@ class UniEarnDB {
       if (idx !== -1) list[idx] = { ...list[idx], ...freelancerData };
     }
     this.setLocal(this.storageKeyFreelancers, list);
+
+    // Sync to Cloud DB
+    this.syncToCloud();
     return true;
   }
 
@@ -194,11 +260,15 @@ class UniEarnDB {
       list = list.filter(f => f.id !== indexOrId);
     }
     this.setLocal(this.storageKeyFreelancers, list);
+
+    // Sync to Cloud DB
+    this.syncToCloud();
     return true;
   }
 
   async clearAllFreelancers() {
     this.setLocal(this.storageKeyFreelancers, []);
+    this.syncToCloud();
   }
 
   async getFreelancerByUserId(userId, name) {
@@ -209,8 +279,11 @@ class UniEarnDB {
   // --- User Auth & Registration ---
   async registerUser(userData) {
     await this.init();
-    const users = this.getLocal(this.storageKeyUsers) || [];
     
+    // Ensure latest accounts from Cloud DB before registering
+    await this.syncFromCloud();
+    const users = this.getLocal(this.storageKeyUsers) || [];
+
     const existing = users.find(u => u.email.toLowerCase() === userData.email.toLowerCase());
     if (existing) {
       throw new Error('An account with this email address already exists.');
@@ -251,12 +324,19 @@ class UniEarnDB {
       });
     }
 
+    // Sync new user & freelancer to Cloud DB so other devices can access it!
+    await this.syncToCloud();
+
     this.setSession(newUser);
     return newUser;
   }
 
   async loginUser(emailOrPhone, password) {
     await this.init();
+    
+    // Pull latest user accounts from Cloud DB first!
+    await this.syncFromCloud();
+    
     const users = this.getLocal(this.storageKeyUsers) || [];
     const query = emailOrPhone.toLowerCase().trim();
     const user = users.find(u => (u.email.toLowerCase() === query || u.phone === query) && u.password === password);
@@ -271,6 +351,8 @@ class UniEarnDB {
 
   async resetPassword(emailOrPhone, newPassword) {
     await this.init();
+    await this.syncFromCloud();
+
     const users = this.getLocal(this.storageKeyUsers) || [];
     const query = emailOrPhone.toLowerCase().trim();
     const userIdx = users.findIndex(u => u.email.toLowerCase() === query || u.phone === query);
@@ -281,6 +363,7 @@ class UniEarnDB {
 
     users[userIdx].password = newPassword;
     this.setLocal(this.storageKeyUsers, users);
+    await this.syncToCloud();
     return true;
   }
 
