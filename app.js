@@ -429,7 +429,8 @@ function handleHireClick(phone) {
   }
 
   const cleanNum = phone.replace(/\D/g, '');
-  window.open(`https://wa.me/${cleanNum}`, '_blank');
+  const prefilledMessage = encodeURIComponent('HI "Uni Earn" Freelancer I can across your profile and I want to hire you!');
+  window.open(`https://wa.me/${cleanNum}?text=${prefilledMessage}`, '_blank');
 }
 
 // ---- Self-Service Freelancer Listing Editing ----
