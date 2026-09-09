@@ -523,6 +523,36 @@ async function handleSaveMyListing(e) {
   alert('✨ Your listing has been updated successfully in the Database!');
 }
 
+async function handleDeleteMyListing() {
+  const session = window.uniEarnDB ? window.uniEarnDB.getCurrentSession() : null;
+  if (!session) return;
+
+  const profile = await window.uniEarnDB.getFreelancerByUserId(session.id, session.name);
+  if (!profile) {
+    alert('No active freelancer listing found to delete.');
+    return;
+  }
+
+  if (confirm('⚠️ Are you sure you want to delete your freelancer gig listing? This action will remove your gig from UniEarn globally.')) {
+    await window.uniEarnDB.deleteFreelancer(profile.id);
+    const modalEl = document.getElementById('myListingModal');
+    if (modalEl) {
+      const modalInstance = bootstrap.Modal.getInstance(modalEl);
+      if (modalInstance) modalInstance.hide();
+    }
+    await loadFreelancersFromDB();
+    alert('🗑️ Your freelancer gig listing has been deleted successfully from the Database.');
+  }
+}
+
+async function handleDeleteMyListingDirect(freelancerId) {
+  if (confirm('⚠️ Are you sure you want to delete this freelancer gig listing? This action cannot be undone.')) {
+    await window.uniEarnDB.deleteFreelancer(freelancerId);
+    await loadFreelancersFromDB();
+    alert('🗑️ Freelancer gig listing deleted successfully.');
+  }
+}
+
 function handleLogout() {
   if (window.uniEarnDB) {
     window.uniEarnDB.logoutUser();
@@ -604,12 +634,15 @@ function renderFreelancers() {
     col.setAttribute('data-aos', 'fade-up');
     col.setAttribute('data-aos-delay', String((idx % 6) * 80));
 
-    // Self-Service Editing Button for Freelancer Owner
+    // Self-Service Edit & Delete Buttons for Freelancer Owner
     let selfEditBtn = '';
     if (session && (session.id === f.userId || session.name.toLowerCase() === f.name.toLowerCase())) {
       selfEditBtn = `
         <button class="btn-edit ms-2" title="Edit My Listing" onclick="openMyListingModal()">
           <i class="fas fa-pen"></i>
+        </button>
+        <button class="btn-delete ms-2" title="Delete My Listing" onclick="handleDeleteMyListingDirect('${f.id}')">
+          <i class="fas fa-trash-alt"></i>
         </button>
       `;
     }
