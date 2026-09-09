@@ -14,10 +14,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     AOS.init({ once: true, duration: 700, offset: 60 });
   }
 
-  // Load freelancers from Automated Database
+  // Load freelancers from Automated Database & Start Real-time Multi-Device Sync Engine
   await loadFreelancersFromDB();
   checkCurrentSession();
   initTypewriterEffect();
+
+  if (window.uniEarnDB) {
+    window.uniEarnDB.startRealtimeSync(loadFreelancersFromDBSilently);
+  }
 
   // Search & Filter Event Listeners
   const searchInput = document.getElementById('searchInput');
@@ -243,6 +247,17 @@ async function loadFreelancersFromDB() {
   }
   renderFreelancers();
   updateStatCounter();
+}
+
+async function loadFreelancersFromDBSilently() {
+  if (window.uniEarnDB) {
+    const freshList = window.uniEarnDB.getLocal(window.uniEarnDB.storageKeyFreelancers) || [];
+    if (JSON.stringify(freshList) !== JSON.stringify(freelancers)) {
+      freelancers = freshList;
+      renderFreelancers();
+      updateStatCounter();
+    }
+  }
 }
 
 // ---- Session & Navbar Handler ----
