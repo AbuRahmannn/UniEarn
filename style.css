@@ -798,6 +798,26 @@ a { text-decoration: none; }
   }
 }
 
+.cursor-pointer {
+  cursor: pointer;
+  user-select: none;
+}
+.preset-chip {
+  transition: all 0.2s ease-in-out;
+  padding: 4px 9px;
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+.preset-chip:hover {
+  background-color: #0d6efd !important;
+  color: #ffffff !important;
+  border-color: #0d6efd !important;
+  transform: translateY(-1px);
+}
+.extra-small {
+  font-size: 0.72rem;
+}
+
 
 
 

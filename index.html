@@ -192,21 +192,42 @@
                     <!-- Freelancer Extra Fields (visible when Freelancer selected) -->
                     <div id="freelancerExtraFields" class="p-3 bg-light rounded-3 mb-3 border" style="display: none;">
                       <div class="mb-2">
-                        <label class="form-label small fw-semibold text-muted"><i class="fas fa-tools me-1"></i>Skills (comma separated)</label>
-                        <input type="text" class="form-control rounded-3 form-control-sm" id="heroSignUpSkills" placeholder="e.g. PPT, Video Editing, Python" />
+                        <label class="form-label small fw-semibold text-muted"><i class="fas fa-tools me-1"></i>Skills (Tap to select or type)</label>
+                        <input type="text" class="form-control rounded-3 form-control-sm mb-1" id="heroSignUpSkills" placeholder="e.g. Assignment Writing, PPT Design" />
+                        <div class="preset-chips d-flex flex-wrap gap-1 mt-1">
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpSkills">+ PPT Design</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpSkills">+ Video Editing</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpSkills">+ Python / Coding</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpSkills">+ Graphic Design</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpSkills">+ Assignment Writing</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpSkills">+ Lab Records</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpSkills">+ Tutoring</span>
+                        </div>
                       </div>
                       <div class="mb-2">
-                        <label class="form-label small fw-semibold text-muted"><i class="fas fa-briefcase me-1"></i>Work Services Offered</label>
-                        <input type="text" class="form-control rounded-3 form-control-sm" id="heroSignUpWork" placeholder="e.g. Report Writing, Web Dev" />
+                        <label class="form-label small fw-semibold text-muted"><i class="fas fa-briefcase me-1"></i>Work Services Offered (Tap to select or type)</label>
+                        <input type="text" class="form-control rounded-3 form-control-sm mb-1" id="heroSignUpWork" placeholder="e.g. Assignment Writing, Record Writing" />
+                        <div class="preset-chips d-flex flex-wrap gap-1 mt-1">
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpWork">+ Assignment Writing</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpWork">+ Record / Lab Record Writing</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpWork">+ PPT & Presentation</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpWork">+ Web Development</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpWork">+ Video & Reel Editing</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpWork">+ Poster Design</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpWork">+ Subject Tutoring</span>
+                          <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="heroSignUpWork">+ Data Entry & Excel</span>
+                        </div>
                       </div>
                       <div class="row g-2">
                         <div class="col-6">
                           <label class="form-label small fw-semibold text-muted">Min Price (₹)</label>
-                          <input type="number" class="form-control rounded-3 form-control-sm" id="heroSignUpPriceMin" placeholder="100" />
+                          <input type="number" class="form-control rounded-3 form-control-sm" id="heroSignUpPriceMin" min="0" max="2000" placeholder="0" value="0" />
+                          <div class="form-text extra-small text-muted">Min ₹0</div>
                         </div>
                         <div class="col-6">
                           <label class="form-label small fw-semibold text-muted">Max Price (₹)</label>
-                          <input type="number" class="form-control rounded-3 form-control-sm" id="heroSignUpPriceMax" placeholder="1000" />
+                          <input type="number" class="form-control rounded-3 form-control-sm" id="heroSignUpPriceMax" min="0" max="2000" placeholder="2000" value="500" />
+                          <div class="form-text extra-small text-muted">Max ₹2,000</div>
                         </div>
                       </div>
                     </div>
@@ -557,12 +578,31 @@
               <input type="text" class="form-control rounded-3 mt-1 d-none" id="myEditCustomLocation" placeholder="Type custom location" />
             </div>
             <div class="mb-3">
-              <label class="form-label small fw-semibold"><i class="fas fa-tools me-1"></i>Skills (comma separated)</label>
-              <input type="text" class="form-control rounded-3" id="myEditSkills" required />
+              <label class="form-label small fw-semibold"><i class="fas fa-tools me-1"></i>Skills (Tap to select or type)</label>
+              <input type="text" class="form-control rounded-3 mb-1" id="myEditSkills" required />
+              <div class="preset-chips d-flex flex-wrap gap-1 mt-1">
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditSkills">+ PPT Design</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditSkills">+ Video Editing</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditSkills">+ Python / Coding</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditSkills">+ Graphic Design</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditSkills">+ Assignment Writing</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditSkills">+ Lab Records</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditSkills">+ Tutoring</span>
+              </div>
             </div>
             <div class="mb-3">
-              <label class="form-label small fw-semibold"><i class="fas fa-briefcase me-1"></i>Work Services Offered</label>
-              <input type="text" class="form-control rounded-3" id="myEditWork" required />
+              <label class="form-label small fw-semibold"><i class="fas fa-briefcase me-1"></i>Work Services Offered (Tap to select or type)</label>
+              <input type="text" class="form-control rounded-3 mb-1" id="myEditWork" required />
+              <div class="preset-chips d-flex flex-wrap gap-1 mt-1">
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditWork">+ Assignment Writing</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditWork">+ Record / Lab Record Writing</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditWork">+ PPT & Presentation</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditWork">+ Web Development</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditWork">+ Video & Reel Editing</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditWork">+ Poster Design</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditWork">+ Subject Tutoring</span>
+                <span class="badge bg-light text-secondary border rounded-pill cursor-pointer preset-chip" data-target="myEditWork">+ Data Entry & Excel</span>
+              </div>
             </div>
             <div class="mb-3">
               <label class="form-label small fw-semibold"><i class="fab fa-whatsapp me-1"></i>WhatsApp Phone</label>
@@ -571,11 +611,13 @@
             <div class="row g-2 mb-3">
               <div class="col-6">
                 <label class="form-label small fw-semibold">Min Price (₹)</label>
-                <input type="number" class="form-control rounded-3" id="myEditPriceMin" required />
+                <input type="number" class="form-control rounded-3" id="myEditPriceMin" min="0" max="2000" placeholder="0" required />
+                <div class="form-text extra-small text-muted">Min ₹0</div>
               </div>
               <div class="col-6">
                 <label class="form-label small fw-semibold">Max Price (₹)</label>
-                <input type="number" class="form-control rounded-3" id="myEditPriceMax" required />
+                <input type="number" class="form-control rounded-3" id="myEditPriceMax" min="0" max="2000" placeholder="2000" required />
+                <div class="form-text extra-small text-muted">Max ₹2,000</div>
               </div>
             </div>
             <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold text-white shadow-sm mb-2">

@@ -54,6 +54,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // Preset Skill & Service Chips Click Handler for Sign Up & Edit Forms
+  document.addEventListener('click', (e) => {
+    const chip = e.target.closest('.preset-chip');
+    if (!chip) return;
+
+    const targetId = chip.getAttribute('data-target');
+    if (!targetId) return;
+
+    const input = document.getElementById(targetId);
+    if (!input) return;
+
+    const cleanVal = chip.textContent.replace(/^\+\s*/, '').trim();
+    let currentVal = input.value.trim();
+    let items = currentVal ? currentVal.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+    const existingIdx = items.findIndex(item => item.toLowerCase() === cleanVal.toLowerCase());
+    if (existingIdx !== -1) {
+      items.splice(existingIdx, 1);
+      chip.classList.remove('bg-primary', 'text-white');
+      chip.classList.add('bg-light', 'text-secondary');
+    } else {
+      items.push(cleanVal);
+      chip.classList.remove('bg-light', 'text-secondary');
+      chip.classList.add('bg-primary', 'text-white');
+    }
+
+    input.value = items.join(', ');
+  });
+
   // Hero Sign Up Location Dropdown Custom Toggle
   const signUpLocSelect = document.getElementById('heroSignUpLocationSelect');
   const signUpCustomLoc = document.getElementById('heroSignUpCustomLocation');
@@ -352,8 +381,20 @@ function startSignUpOTPFlow(e) {
   if (role === 'freelancer') {
     pendingSignUpData.skills = document.getElementById('heroSignUpSkills').value.trim() || 'General Services';
     pendingSignUpData.work = document.getElementById('heroSignUpWork').value.trim() || 'Freelance Work';
-    pendingSignUpData.priceMin = document.getElementById('heroSignUpPriceMin').value.trim() || '100';
-    pendingSignUpData.priceMax = document.getElementById('heroSignUpPriceMax').value.trim() || '500';
+    
+    let rawMin = parseInt(document.getElementById('heroSignUpPriceMin').value);
+    let rawMax = parseInt(document.getElementById('heroSignUpPriceMax').value);
+
+    let pMin = isNaN(rawMin) ? 0 : Math.max(0, rawMin);
+    let pMax = isNaN(rawMax) ? 500 : Math.min(2000, Math.max(0, rawMax));
+
+    if (rawMax > 2000) {
+      alert('ℹ️ Maximum price is capped at ₹2,000. Price set to ₹2,000.');
+    }
+    if (pMin > pMax) pMin = pMax;
+
+    pendingSignUpData.priceMin = String(pMin);
+    pendingSignUpData.priceMax = String(pMax);
   }
 
   const otpCode = window.uniEarnDB.generateOTP(email);
@@ -507,14 +548,25 @@ async function handleSaveMyListing(e) {
     location = customLoc.value.trim();
   }
 
+  let rawMin = parseInt(document.getElementById('myEditPriceMin').value);
+  let rawMax = parseInt(document.getElementById('myEditPriceMax').value);
+
+  let pMin = isNaN(rawMin) ? 0 : Math.max(0, rawMin);
+  let pMax = isNaN(rawMax) ? 2000 : Math.min(2000, Math.max(0, rawMax));
+
+  if (rawMax > 2000) {
+    alert('ℹ️ Maximum price is capped at ₹2,000. Price set to ₹2,000.');
+  }
+  if (pMin > pMax) pMin = pMax;
+
   const updatedData = {
     name: document.getElementById('myEditName').value.trim(),
     location: location,
     skills: document.getElementById('myEditSkills').value.trim(),
     work: document.getElementById('myEditWork').value.trim(),
     phone: document.getElementById('myEditPhone').value.trim(),
-    priceMin: document.getElementById('myEditPriceMin').value.trim(),
-    priceMax: document.getElementById('myEditPriceMax').value.trim()
+    priceMin: String(pMin),
+    priceMax: String(pMax)
   };
 
   await window.uniEarnDB.updateFreelancer(profile.id, updatedData);
