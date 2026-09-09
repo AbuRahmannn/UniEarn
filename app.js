@@ -39,7 +39,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Live GPS Detect Button Handler in Sign Up
   const detectSignUpLocationBtn = document.getElementById('detectSignUpLocationBtn');
-  if (detectSignUpLocationBtn) detectSignUpLocationBtn.addEventListener('click', handleDetectLiveGPS);
+  if (detectSignUpLocationBtn) detectSignUpLocationBtn.addEventListener('click', () => handleDetectLiveGPS(false));
+  
+  // Silently assess user live location for signup
+  handleDetectLiveGPS(true);
 
   // Category Filter Chips Handler
   const categoryChips = document.getElementById('categoryChips');
@@ -148,18 +151,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (navLogoutBtn) navLogoutBtn.addEventListener('click', handleLogout);
 });
 
-// ---- Live GPS Geolocation Handler ----
-function handleDetectLiveGPS() {
+// ---- Live GPS Geolocation & College/City Assessment Handler ----
+function handleDetectLiveGPS(isSilent = false) {
   const detectBtn = document.getElementById('detectSignUpLocationBtn');
   const locSelect = document.getElementById('heroSignUpLocationSelect');
   const customLoc = document.getElementById('heroSignUpCustomLocation');
 
   if (!navigator.geolocation) {
-    alert('Geolocation is not supported by your browser.');
+    if (!isSilent) alert('Geolocation is not supported by your browser.');
     return;
   }
 
-  if (detectBtn) detectBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Detecting...';
+  if (detectBtn && !isSilent) {
+    detectBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Assessing...';
+  }
 
   navigator.geolocation.getCurrentPosition(
     async position => {
@@ -169,18 +174,71 @@ function handleDetectLiveGPS() {
 
       try {
         // Reverse Geocode using OpenStreetMap Nominatim API
-        const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+        const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`);
         const data = await resp.json();
         const address = data.address || {};
-        const placeName = address.amenity || address.suburb || address.city || address.town || address.state_district || 'Live GPS Location';
 
-        if (locSelect) locSelect.value = 'Other';
-        if (customLoc) {
-          customLoc.classList.remove('d-none');
-          customLoc.value = placeName + ' (GPS Verified)';
+        const detectedCollegeName = address.university || address.college || address.amenity || address.building || '';
+        const detectedCityName = address.city || address.town || address.village || address.suburb || address.city_district || address.county || address.state_district || 'My Location';
+
+        // Match detected location against popular colleges
+        let matchedCollege = null;
+        if (window.POPULAR_COLLEGES && Array.isArray(window.POPULAR_COLLEGES)) {
+          matchedCollege = window.POPULAR_COLLEGES.find(col => {
+            if (col.includes('Other')) return false;
+            const cLower = col.toLowerCase();
+            return (detectedCollegeName && (cLower.includes(detectedCollegeName.toLowerCase()) || detectedCollegeName.toLowerCase().includes(cLower))) ||
+                   (detectedCityName && cLower.includes(detectedCityName.toLowerCase()));
+          });
+
+          // Check coordinates distance (within 15km)
+          if (!matchedCollege && window.COLLEGE_COORDINATES && window.calculateDistanceKm) {
+            let minDistance = 15;
+            for (const [colName, coords] of Object.entries(window.COLLEGE_COORDINATES)) {
+              const dist = window.calculateDistanceKm(lat, lon, coords.lat, coords.lon);
+              if (dist !== null && dist < minDistance) {
+                minDistance = dist;
+                matchedCollege = colName;
+              }
+            }
+          }
         }
-        if (detectBtn) detectBtn.innerHTML = '<i class="fas fa-check text-success me-1"></i>GPS Located';
-        alert(`📍 Live location detected: ${placeName}`);
+
+        if (locSelect) {
+          if (matchedCollege) {
+            locSelect.value = matchedCollege;
+            if (customLoc) {
+              customLoc.classList.add('d-none');
+              customLoc.value = '';
+            }
+            if (!isSilent) alert(`📍 Recognized College Detected: ${matchedCollege}`);
+          } else {
+            // College not available in database: add user's live city to dropdown
+            const cityLabel = detectedCityName;
+
+            let existingOpt = Array.from(locSelect.options).find(opt => opt.value.toLowerCase() === cityLabel.toLowerCase());
+            if (!existingOpt) {
+              const newOpt = document.createElement('option');
+              newOpt.value = cityLabel;
+              newOpt.textContent = `📍 ${cityLabel} (Live City)`;
+              locSelect.insertBefore(newOpt, locSelect.options[locSelect.options.length - 1]);
+              locSelect.value = cityLabel;
+            } else {
+              locSelect.value = existingOpt.value;
+            }
+
+            if (customLoc) {
+              customLoc.classList.remove('d-none');
+              customLoc.value = detectedCollegeName ? `${detectedCollegeName}, ${cityLabel}` : cityLabel;
+            }
+
+            if (!isSilent) alert(`📍 College not in list. Added your live city: ${cityLabel}`);
+          }
+        }
+
+        if (detectBtn) {
+          detectBtn.innerHTML = `<i class="fas fa-check text-success me-1"></i>${matchedCollege || detectedCityName}`;
+        }
       } catch (err) {
         if (locSelect) locSelect.value = 'Other';
         if (customLoc) {
@@ -192,7 +250,7 @@ function handleDetectLiveGPS() {
     },
     error => {
       if (detectBtn) detectBtn.innerHTML = '<i class="fas fa-crosshairs me-1 text-danger"></i>Live GPS';
-      alert('Could not access live location. Please select your college from the dropdown.');
+      if (!isSilent) alert('Could not access live location. Please select your college or city from the dropdown.');
     },
     { timeout: 10000 }
   );
