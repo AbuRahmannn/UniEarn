@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Load freelancers from Automated Database
   await loadFreelancersFromDB();
   checkCurrentSession();
+  initTypewriterEffect();
 
   // Search & Filter Event Listeners
   const searchInput = document.getElementById('searchInput');
@@ -646,3 +647,24 @@ function updateStatCounter() {
     el.textContent = current;
   }, 30);
 }
+
+// ---- Typewriter Effect for Hero Description ----
+function initTypewriterEffect() {
+  const target = document.getElementById('typewriterTarget');
+  if (!target) return;
+
+  const fullText = "Access student services, register as a freelancer, or log in to connect directly with fellow student freelancers.";
+  let index = 0;
+  target.textContent = "";
+
+  function typeChar() {
+    if (index < fullText.length) {
+      target.textContent += fullText.charAt(index);
+      index++;
+      setTimeout(typeChar, 35);
+    }
+  }
+
+  typeChar();
+}
+

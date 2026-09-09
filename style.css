@@ -585,6 +585,18 @@ a { text-decoration: none; }
   box-shadow: 0 4px 12px rgba(131, 58, 180, 0.25);
 }
 
+.typewriter-cursor {
+  font-weight: 700;
+  color: #E1306C;
+  margin-left: 2px;
+  animation: typewriterBlink 0.7s infinite;
+}
+
+@keyframes typewriterBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 .user-pill {
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
