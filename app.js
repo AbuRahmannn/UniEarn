@@ -236,6 +236,7 @@ function scrollToAuth(tab) {
 // ---- Load & Render Data from DB ----
 async function loadFreelancersFromDB() {
   if (window.uniEarnDB) {
+    await window.uniEarnDB.syncFromCloud();
     freelancers = await window.uniEarnDB.getFreelancers();
   } else {
     freelancers = window.freelancersData || [];

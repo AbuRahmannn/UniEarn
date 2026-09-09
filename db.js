@@ -106,7 +106,7 @@ class UniEarnDB {
       // Merge Cloud Users with Local Users
       const localUsers = this.getLocal(this.storageKeyUsers) || [];
       const userMap = new Map();
-      [...localUsers, ...cloudUsers].forEach(u => {
+      [...cloudUsers, ...localUsers].forEach(u => {
         if (u && u.email) userMap.set(u.email.toLowerCase(), u);
       });
       const mergedUsers = Array.from(userMap.values());
@@ -115,11 +115,16 @@ class UniEarnDB {
       // Merge Cloud Freelancers with Local Freelancers
       const localFreelancers = this.getLocal(this.storageKeyFreelancers) || [];
       const freelancerMap = new Map();
-      [...localFreelancers, ...cloudFreelancers].forEach(f => {
-        if (f && (f.id || f.name)) freelancerMap.set(f.id || f.name.toLowerCase(), f);
+      [...cloudFreelancers, ...localFreelancers].forEach(f => {
+        if (f && (f.id || f.name)) freelancerMap.set((f.id || f.name).toLowerCase(), f);
       });
       const mergedFreelancers = Array.from(freelancerMap.values());
       this.setLocal(this.storageKeyFreelancers, mergedFreelancers);
+
+      // Push merged profiles to cloud if new local items exist
+      if (mergedUsers.length > cloudUsers.length || mergedFreelancers.length > cloudFreelancers.length) {
+        await this.syncToCloud();
+      }
     } catch (e) {
       console.warn('Cloud Database Fetch Error (using offline local storage):', e);
     }
