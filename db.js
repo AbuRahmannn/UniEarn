@@ -5,7 +5,6 @@
 
 const DB_NAME = 'UniEarnDB';
 const DB_VERSION = 1;
-const CLOUD_DB_URL = 'https://api.restful-api.dev/objects/ff808181a067127101a0873b93995acd';
 
 // List of popular real-time universities and colleges
 window.POPULAR_COLLEGES = [
@@ -76,6 +75,13 @@ class UniEarnDB {
     this.syncInterval = null;
   }
 
+  getCloudEndpoint() {
+    if (window.location && window.location.origin && !window.location.origin.includes('file://')) {
+      return `${window.location.origin}/api/db`;
+    }
+    return 'https://uni-earn.vercel.app/api/db';
+  }
+
   async init() {
     let existingFreelancers = this.getLocal(this.storageKeyFreelancers);
     if (!existingFreelancers) {
@@ -95,7 +101,7 @@ class UniEarnDB {
   // --- Global Enterprise Multi-Device Cloud Synchronization ---
   async syncFromCloud() {
     try {
-      const resp = await fetch(CLOUD_DB_URL, { cache: 'no-store' });
+      const resp = await fetch(this.getCloudEndpoint(), { cache: 'no-store' });
       if (!resp.ok) return false;
       const res = await resp.json();
       const cloudData = res.data || {};
@@ -103,27 +109,13 @@ class UniEarnDB {
       const cloudUsers = cloudData.users || [];
       const cloudFreelancers = cloudData.freelancers || [];
 
-      // Combine Cloud Users with Local Users (Cloud takes priority)
-      const localUsers = this.getLocal(this.storageKeyUsers) || [];
-      const userMap = new Map();
-      [...cloudUsers, ...localUsers].forEach(u => {
-        if (u && u.email) userMap.set(u.email.toLowerCase(), u);
-      });
-      const mergedUsers = Array.from(userMap.values());
-      this.setLocal(this.storageKeyUsers, mergedUsers);
+      // Cloud DB is the single authoritative source of truth for all connected clients
+      if (Array.isArray(cloudUsers)) {
+        this.setLocal(this.storageKeyUsers, cloudUsers);
+      }
 
-      // Combine Cloud Freelancers with Local Freelancers (Cloud takes priority)
-      const localFreelancers = this.getLocal(this.storageKeyFreelancers) || [];
-      const freelancerMap = new Map();
-      [...cloudFreelancers, ...localFreelancers].forEach(f => {
-        if (f && (f.id || f.name)) freelancerMap.set((f.id || f.name).toLowerCase(), f);
-      });
-      const mergedFreelancers = Array.from(freelancerMap.values());
-      this.setLocal(this.storageKeyFreelancers, mergedFreelancers);
-
-      // Push merged data back to Cloud if local had new offline items
-      if (localUsers.length > cloudUsers.length || localFreelancers.length > cloudFreelancers.length) {
-        await this.syncToCloud();
+      if (Array.isArray(cloudFreelancers)) {
+        this.setLocal(this.storageKeyFreelancers, cloudFreelancers);
       }
 
       return true;
@@ -147,8 +139,8 @@ class UniEarnDB {
         }
       };
 
-      await fetch(CLOUD_DB_URL, {
-        method: 'PUT',
+      await fetch(this.getCloudEndpoint(), {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
@@ -157,7 +149,7 @@ class UniEarnDB {
     }
   }
 
-  // Live Auto Polling Engine (Every 5 seconds for real-time multi-device sync)
+  // Live Auto Polling Engine (Every 3 seconds for instant real-time multi-device sync)
   startRealtimeSync(onUpdateCallback) {
     if (this.syncInterval) clearInterval(this.syncInterval);
     this.syncInterval = setInterval(async () => {
@@ -165,7 +157,7 @@ class UniEarnDB {
       if (updated && typeof onUpdateCallback === 'function') {
         onUpdateCallback();
       }
-    }, 5000);
+    }, 3000);
   }
 
   getLocal(key) {
