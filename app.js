@@ -827,3 +827,71 @@ function initTypewriterEffect() {
   typeChar();
 }
 
+// ---- Cute Share & Refer to Friend Handlers ----
+function openShareModal() {
+  const modalEl = document.getElementById('shareModal');
+  if (modalEl) {
+    new bootstrap.Modal(modalEl).show();
+  }
+}
+
+function getShareMessage() {
+  return "Hey! Check out UniEarn 🎓✨ – Find & hire trusted student freelancers near your college or offer your skills to earn money! Check it out here: https://uni-earn.vercel.app/";
+}
+
+function shareViaWhatsApp() {
+  const msg = encodeURIComponent(getShareMessage());
+  window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+
+function shareViaTelegram() {
+  const msg = encodeURIComponent(getShareMessage());
+  const url = encodeURIComponent("https://uni-earn.vercel.app/");
+  window.open(`https://t.me/share/url?url=${url}&text=${msg}`, '_blank');
+}
+
+function copyShareLink() {
+  const copyInput = document.getElementById('shareLinkInput');
+  const copyBtn = document.getElementById('copyShareBtn');
+  const copyAlert = document.getElementById('copyAlertMessage');
+
+  const textToCopy = copyInput ? copyInput.value : 'https://uni-earn.vercel.app/';
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      showCopySuccess(copyBtn, copyAlert);
+    }).catch(() => fallbackCopy(copyInput, copyBtn, copyAlert));
+  } else {
+    fallbackCopy(copyInput, copyBtn, copyAlert);
+  }
+}
+
+function showCopySuccess(copyBtn, copyAlert) {
+  if (copyBtn) copyBtn.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+  if (copyAlert) copyAlert.classList.remove('d-none');
+  setTimeout(() => {
+    if (copyBtn) copyBtn.innerHTML = '<i class="fas fa-copy me-1"></i>Copy Link';
+    if (copyAlert) copyAlert.classList.add('d-none');
+  }, 3000);
+}
+
+function fallbackCopy(inputEl, copyBtn, copyAlert) {
+  if (inputEl) {
+    inputEl.select();
+    document.execCommand('copy');
+    showCopySuccess(copyBtn, copyAlert);
+  }
+}
+
+function triggerNativeShare() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'UniEarn – Student Freelancer Platform',
+      text: getShareMessage(),
+      url: 'https://uni-earn.vercel.app/'
+    }).catch(err => console.log('Share dismissed:', err));
+  } else {
+    copyShareLink();
+  }
+}
+
